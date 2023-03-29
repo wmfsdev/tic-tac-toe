@@ -5,7 +5,7 @@
 
 
 const Gameboard = (() => {    // MODULE
-  const gameboard = [
+  let gameboard = [
       ['.', '.', '.', 
        '.', '.', '.', 
        '.', '.', '.']
@@ -14,22 +14,53 @@ const Gameboard = (() => {    // MODULE
     return {
       markBoard(playerId, eTarget) {        // takes player mark from Player object
         const listen = document.querySelector(`[data-index="${eTarget}"]`)
-        listen.textContent = playerId
+        if (listen.textContent === "") {
+          listen.textContent = playerId
+          listen.disabled = true
+        } else return
         this.markArray(playerId, eTarget)
-       // console.log(playerId,eTarget)
       },
 
       markArray(playerId, eTarget) {
        console.log(playerId, eTarget)
-        
+        console.log(gameboard[0][eTarget])
         if (gameboard[0][eTarget] === '.' ) {   
-           gameboard[0].splice(eTarget, 1, playerId)
-         }
+          gameboard[0].splice(eTarget, 1, playerId)
+          this.gameState()
+        }
         else if (gameboard[0][eTarget] !== '.') {
-          gameboard[0] = gameboard[0]
-        } 
-   
-          console.log(gameboard)
+          gameboard = gameboard[0][eTarget] // = gameboard[0][eTarget]
+        }
+        console.log(gameboard)
+        
+      },
+
+      gameState() {
+        if (gameboard[0][0] === '0'  && gameboard[0][1] === '0' && gameboard[0][2] === '0' ||
+            gameboard[0][3] === '0'  && gameboard[0][4] === '0' && gameboard[0][5] === '0' ||
+            gameboard[0][6] === '0'  && gameboard[0][7] === '0' && gameboard[0][8] === '0' ||
+            // ^^ Horizontal wins from first to last row
+            gameboard[0][0] === '0'  && gameboard[0][3] === '0'  && gameboard[0][6] === '0' ||  
+            gameboard[0][1] === '0'  && gameboard[0][4] === '0'  && gameboard[0][7] === '0' || 
+            gameboard[0][2] === '0' && gameboard[0][5] === '0' && gameboard[0][8] === '0' || 
+            // ^^ Vertical wins from first to last column
+            gameboard[0][0] === '0'  && gameboard[0][4] === '0' && gameboard[0][8] === '0' || 
+            gameboard[0][6] === '0'  && gameboard[0][4] === '0'  && gameboard[0][2] === '0' || 
+            // ^^ Diagonal wins: top left to bottom right, bottom left to top right
+            gameboard[0][0] === 'X'  && gameboard[0][1] === 'X' && gameboard[0][2] === 'X' ||
+            gameboard[0][3] === 'X'  && gameboard[0][4] === 'X' && gameboard[0][5] === 'X' ||
+            gameboard[0][6] === 'X'  && gameboard[0][7] === 'X' && gameboard[0][8] === 'X' ||
+            // ^^ Horizontal wins from first to last row
+            gameboard[0][0] === 'X'  && gameboard[0][3] === 'X'  && gameboard[0][6] === 'X' ||  
+            gameboard[0][1] === 'X'  && gameboard[0][4] === 'X'  && gameboard[0][7] === 'X' || 
+            gameboard[0][2] === 'X' && gameboard[0][5] === 'X' && gameboard[0][8] === 'X' || 
+            // ^^ Vertical wins from first to last column
+            gameboard[0][0] === 'X'  && gameboard[0][4] === 'X' && gameboard[0][8] === 'X' || 
+            gameboard[0][6] === 'X'  && gameboard[0][4] === 'X'  && gameboard[0][2] === 'X'
+          )
+        {
+          console.log("-----WINNER!!-----")
+        }
       },
 
       log() {console.dir(gameboard)},
@@ -51,23 +82,9 @@ const Gameboard = (() => {    // MODULE
 
 const Players = (name, playerId) => { 
     const tileId = (etarget) => {
-      Gameboard.markBoard(playerId, etarget)  // e.target.dataset.index
+      Gameboard.markBoard(playerId, etarget)
     }
-
-    return { name, playerId, tileId } 
-    // const tileArray = (eTarget) => {
-    //   Gameboard.markBoard(eTarget)
-    // }
-
-    // const placeMark = () => {
-    //   const listen = document.querySelectorAll('button')
-    //   listen.forEach((button) => {
-    //     button.addEventListener('click', (e) => {
-    //      // console.log(e.target.dataset.index) 
-    //     //  Gameboard.markBoard(e.target.dataset.index) // Gameboard.markBoard(e.target.dataset.index)
-    //     })
-    //   })
-    // }   
+    return { name, playerId, tileId }  
 }   
 
 const gameFlow = () => {
@@ -109,6 +126,12 @@ const turnListen = () => {
       })
 })
 }
+
+// const winner = () => {
+  // ??
+// }
+
+
 
 turnListen()
   

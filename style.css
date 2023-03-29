@@ -21,8 +21,14 @@ body {
 .tiles > button {
     height:200px;
     width:200px;
+    
 }
 
 .player-info {
     margin-top: 50px;
+}
+
+button:disabled {
+    background-color:rgb(233, 233, 231);
+    color: black;
 }
