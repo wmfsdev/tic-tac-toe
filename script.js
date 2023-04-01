@@ -1,5 +1,5 @@
-// const but = document.querySelector('button')
-// but.addEventListener('click') => {
+// const playerInput = document.querySelector('button')
+// playerInput.addEventListener('click') => {
 //   e.preventDefault()
 // })
 
@@ -77,51 +77,50 @@ const Gameboard = (() => {    // MODULE
 
 
 const Players = (name, playerId) => { 
+
     const tileId = (etarget) => {
       Gameboard.markBoard(playerId, etarget)
     }
+
     return { name, playerId, tileId }  
 }   
 
+// ------
+
 const gameFlow = () => {
+ 
 
- // const printBoard = () => {Gameboard.renderBoard()}
-      // PLAYER SELECT - we can come back to this. for now player names are default
-      //  const nameInput = () => {
-      //   const form = document.querySelector('.player-info')
-      //   form.addEventListener('submit', (e) => {
-      //     e.preventDefault()
-      //   })} - something like this?
-  
-//  printBoard() // this possibly needs to be somewhere else entirely - it resets the entire board.
-              // alternatively, add an if condition so it doesn't reset until win or if array not empty etc.
+        const form = document.querySelector('.player-info')
+        form.addEventListener('submit', (e) => {
+        e.preventDefault()
+          
+        })
 
+const playerOne = Players("playerOne", "0")
+const playerTwo = Players("playerTwo", "X")
            
   let turn = 0
 
   const turnListen = () => {
-    const listen = document.querySelectorAll('button')
+    const listen = document.querySelectorAll('.tiles > button')
       listen.forEach((button) => {
         button.addEventListener('click', (e) => {
           if (turn === 0) {
             playerOne.tileId(e.target.dataset.index)
             turn += 1
-            console.log("player one")
+            console.log(playerOne.name)
           } else {
             playerTwo.tileId(e.target.dataset.index)
-            console.log("player two")
+            console.log(playerTwo.name)
             turn -= 1
           }
         })
-  })
+      })
   }
 
-  // const winner = () => {
-  //   // ????
-  // }
-  
-const playerOne = Players("playerOne", "0")
-const playerTwo = Players("playerTwo", "X")
+
+
+
 
 Gameboard.renderBoard()
 Gameboard.assignDataset()
