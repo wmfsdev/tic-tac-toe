@@ -1,8 +1,3 @@
-// const playerInput = document.querySelector('button')
-// playerInput.addEventListener('click') => {
-//   e.preventDefault()
-// })
-
 
 const Gameboard = (() => {    // MODULE
   let gameboard = [
@@ -22,41 +17,42 @@ const Gameboard = (() => {    // MODULE
       },
 
       markArray(playerId, eTarget) {
-       console.log(playerId, eTarget)
-        console.log(gameboard[0][eTarget])
+   //    console.log(playerId, eTarget)
         if (gameboard[0][eTarget] === '.' ) {   
           gameboard[0].splice(eTarget, 1, playerId)
-          this.gameState()
+         // this.gameState()
         }
         else if (gameboard[0][eTarget] !== '.') {
           gameboard = gameboard[0][eTarget]
         }
-        console.log(gameboard)
+       // console.log(gameboard)
       },
 
-      gameState() {
-        if (gameboard[0][0] === '0'  && gameboard[0][1] === '0' && gameboard[0][2] === '0' ||
-            gameboard[0][3] === '0'  && gameboard[0][4] === '0' && gameboard[0][5] === '0' ||
-            gameboard[0][6] === '0'  && gameboard[0][7] === '0' && gameboard[0][8] === '0' ||
+      gameState(playerId, playerName) {
+
+        const player = (playerId === '0') ? '0' : 'X'
+        // let player = ''
+
+        // if (playerId === '0') {
+        //   player = '0'
+        // }
+        // else if (playerId === 'X') {
+        //   player = 'X'
+        // }
+
+        console.log(player)
+        if (gameboard[0][0] === player  && gameboard[0][1] === player && gameboard[0][2] === player ||
+            gameboard[0][3] === player  && gameboard[0][4] === player && gameboard[0][5] === player ||
+            gameboard[0][6] === player  && gameboard[0][7] === player && gameboard[0][8] === player ||
             // ^^ Horizontal wins from first to last row
-            gameboard[0][0] === '0'  && gameboard[0][3] === '0'  && gameboard[0][6] === '0' ||  
-            gameboard[0][1] === '0'  && gameboard[0][4] === '0'  && gameboard[0][7] === '0' || 
-            gameboard[0][2] === '0' && gameboard[0][5] === '0' && gameboard[0][8] === '0' || 
+            gameboard[0][0] === player  && gameboard[0][3] === player  && gameboard[0][6] === player ||  
+            gameboard[0][1] === player  && gameboard[0][4] === player  && gameboard[0][7] === player || 
+            gameboard[0][2] === player && gameboard[0][5] === player && gameboard[0][8] === player || 
             // ^^ Vertical wins from first to last column
-            gameboard[0][0] === '0'  && gameboard[0][4] === '0' && gameboard[0][8] === '0' || 
-            gameboard[0][6] === '0'  && gameboard[0][4] === '0'  && gameboard[0][2] === '0' || 
+            gameboard[0][0] === player  && gameboard[0][4] === player && gameboard[0][8] === player || 
+            gameboard[0][6] === player  && gameboard[0][4] === player  && gameboard[0][2] === player  
             // ^^ Diagonal wins: top left to bottom right, bottom left to top right
-            gameboard[0][0] === 'X'  && gameboard[0][1] === 'X' && gameboard[0][2] === 'X' ||
-            gameboard[0][3] === 'X'  && gameboard[0][4] === 'X' && gameboard[0][5] === 'X' ||
-            gameboard[0][6] === 'X'  && gameboard[0][7] === 'X' && gameboard[0][8] === 'X' ||
-            // ^^ Horizontal wins from first to last row
-            gameboard[0][0] === 'X'  && gameboard[0][3] === 'X'  && gameboard[0][6] === 'X' ||  
-            gameboard[0][1] === 'X'  && gameboard[0][4] === 'X'  && gameboard[0][7] === 'X' || 
-            gameboard[0][2] === 'X' && gameboard[0][5] === 'X' && gameboard[0][8] === 'X' || 
-            // ^^ Vertical wins from first to last column
-            gameboard[0][0] === 'X'  && gameboard[0][4] === 'X' && gameboard[0][8] === 'X' || 
-            gameboard[0][6] === 'X'  && gameboard[0][4] === 'X'  && gameboard[0][2] === 'X'
-          ) { console.log("---- WINNER! -----") }
+          ) { console.log(`${playerName} " wins"` )}
       },
 
       log() {console.dir(gameboard)},
@@ -81,24 +77,33 @@ const Players = (name, playerId) => {
     const tileId = (etarget) => {
       Gameboard.markBoard(playerId, etarget)
     }
-
-    return { name, playerId, tileId }  
+    return { name, playerId, tileId } 
 }   
 
 // ------
 
-const gameFlow = () => {
+const gameFlow = (() => {
  
+  const playerOne = Players('one', '0')
+  const playerTwo = Players('two', 'X')
 
-        const form = document.querySelector('.player-info')
-        form.addEventListener('submit', (e) => {
-        e.preventDefault()
-          
-        })
+  const submit = document.getElementById('submit');
+  
 
-const playerOne = Players("playerOne", "0")
-const playerTwo = Players("playerTwo", "X")
-           
+  	const changePlayerNames = () => {
+      const playerOneName = document.getElementById('name-one').value;
+      const playerTwoName = document.getElementById('name-two').value;
+     // displayPlayers.playerOne.textContent = `${playerOneName}`;
+     // displayPlayers.playerTwo.textContent = `${playerTwoName}`;
+      playerOne.name = playerOneName;
+      playerTwo.name = playerTwoName;
+      console.log(playerOne.name)
+      console.log(playerOne.playerId)
+      
+    }
+
+  submit.addEventListener('click', changePlayerNames);
+         
   let turn = 0
 
   const turnListen = () => {
@@ -107,10 +112,14 @@ const playerTwo = Players("playerTwo", "X")
         button.addEventListener('click', (e) => {
           if (turn === 0) {
             playerOne.tileId(e.target.dataset.index)
+            // console.log(playerOne.playerId)
+            Gameboard.gameState(playerOne.playerId, playerOne.name)
             turn += 1
-            console.log(playerOne.name)
+             console.log(playerOne.name)
           } else {
+            // console.log(playerTwo.playerId)
             playerTwo.tileId(e.target.dataset.index)
+            Gameboard.gameState(playerTwo.playerId, playerTwo.name)
             console.log(playerTwo.name)
             turn -= 1
           }
@@ -118,15 +127,8 @@ const playerTwo = Players("playerTwo", "X")
       })
   }
 
-
-
-
-
 Gameboard.renderBoard()
 Gameboard.assignDataset()
 turnListen()
 
-}
-
-gameFlow()
-// Gameboard.log()
+})()
