@@ -6,6 +6,37 @@ const Gameboard = (() => {    // MODULE
        '.', '.', '.']
     ];
 
+  const reset = () => {
+      gameboard = [
+        ['.', '.', '.', 
+         '.', '.', '.', 
+         '.', '.', '.']
+      ];
+    }
+
+    const declareWinner = (winner) => {
+      const win = document.querySelector('body')
+      const modal = document.createElement('div')
+      const p = document.createElement('p')
+      const overlay = document.createElement('div')
+      const button = document.createElement('button')
+      p.textContent = (`${winner} WINS!`)
+      button.textContent = 'Go Again?'
+      button.classList.add('again')
+      modal.classList.add('modal')
+      p.classList.add('p')
+      overlay.classList.add('overlay')
+      win.append(overlay)
+      win.append(modal)
+      modal.append(p)
+      modal.append(button)
+      button.addEventListener('click', () => {
+        modal.style.display = 'none'
+        overlay.style.display = 'none'
+        reset()
+      })
+    }
+
     return {
       markBoard(playerId, eTarget) {        // takes player mark from Player object
         const listen = document.querySelector(`[data-index="${eTarget}"]`)
@@ -17,28 +48,17 @@ const Gameboard = (() => {    // MODULE
       },
 
       markArray(playerId, eTarget) {
-   //    console.log(playerId, eTarget)
         if (gameboard[0][eTarget] === '.' ) {   
           gameboard[0].splice(eTarget, 1, playerId)
-         // this.gameState()
         }
         else if (gameboard[0][eTarget] !== '.') {
           gameboard = gameboard[0][eTarget]
         }
-       // console.log(gameboard)
       },
 
       gameState(playerId, playerName) {
 
         const player = (playerId === '0') ? '0' : 'X'
-        // let player = ''
-
-        // if (playerId === '0') {
-        //   player = '0'
-        // }
-        // else if (playerId === 'X') {
-        //   player = 'X'
-        // }
 
         console.log(player)
         if (gameboard[0][0] === player  && gameboard[0][1] === player && gameboard[0][2] === player ||
@@ -52,7 +72,7 @@ const Gameboard = (() => {    // MODULE
             gameboard[0][0] === player  && gameboard[0][4] === player && gameboard[0][8] === player || 
             gameboard[0][6] === player  && gameboard[0][4] === player  && gameboard[0][2] === player  
             // ^^ Diagonal wins: top left to bottom right, bottom left to top right
-          ) { console.log(`${playerName} " wins"` )}
+          ) { declareWinner(playerName) } 
       },
 
       log() {console.dir(gameboard)},
@@ -84,22 +104,16 @@ const Players = (name, playerId) => {
 
 const gameFlow = (() => {
  
-  const playerOne = Players('one', '0')
-  const playerTwo = Players('two', 'X')
+  const playerOne = Players('PLAYER 0', '0')
+  const playerTwo = Players('PLAYER X', 'X')
 
   const submit = document.getElementById('submit');
   
-
   	const changePlayerNames = () => {
       const playerOneName = document.getElementById('name-one').value;
       const playerTwoName = document.getElementById('name-two').value;
-     // displayPlayers.playerOne.textContent = `${playerOneName}`;
-     // displayPlayers.playerTwo.textContent = `${playerTwoName}`;
       playerOne.name = playerOneName;
-      playerTwo.name = playerTwoName;
-      console.log(playerOne.name)
-      console.log(playerOne.playerId)
-      
+      playerTwo.name = playerTwoName; 
     }
 
   submit.addEventListener('click', changePlayerNames);
@@ -112,15 +126,11 @@ const gameFlow = (() => {
         button.addEventListener('click', (e) => {
           if (turn === 0) {
             playerOne.tileId(e.target.dataset.index)
-            // console.log(playerOne.playerId)
             Gameboard.gameState(playerOne.playerId, playerOne.name)
             turn += 1
-             console.log(playerOne.name)
           } else {
-            // console.log(playerTwo.playerId)
             playerTwo.tileId(e.target.dataset.index)
             Gameboard.gameState(playerTwo.playerId, playerTwo.name)
-            console.log(playerTwo.name)
             turn -= 1
           }
         })
