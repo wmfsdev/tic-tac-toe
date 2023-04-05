@@ -6,7 +6,7 @@ const Gameboard = (() => {    // MODULE
        '.', '.', '.']
     ];
 
-  const reset = () => {
+  const _reset = () => {
     
       gameboard = [
         ['.', '.', '.', 
@@ -23,7 +23,7 @@ const Gameboard = (() => {    // MODULE
       gameFlow()
     }
 
-    const declareWinner = (winner) => {
+    const _declareWinner = (winner) => {
       const win = document.querySelector('body')
       const modal = document.createElement('div')
       const p = document.createElement('p')
@@ -43,7 +43,7 @@ const Gameboard = (() => {    // MODULE
       win.append(modal)
       modal.append(p)
       modal.append(button)
-      button.addEventListener('click', reset)
+      button.addEventListener('click', _reset)
     }
 
     return {
@@ -80,13 +80,12 @@ const Gameboard = (() => {    // MODULE
             gameboard[0][0] === player && gameboard[0][4] === player && gameboard[0][8] === player || 
             gameboard[0][6] === player && gameboard[0][4] === player && gameboard[0][2] === player  
             // ^^ Diagonal wins: top left to bottom right, bottom left to top right
-          ) { declareWinner(playerName) 
+          ) { _declareWinner(playerName) 
               return  
           }
-            if (counter > 8) { declareWinner("DRAW") }  
+            if (counter > 8) { _declareWinner("DRAW") }  
       },
 
-      log() {console.dir(gameboard)},
       renderBoard() {
         const board = document.querySelectorAll('.tiles')
         board.forEach((tile) => {

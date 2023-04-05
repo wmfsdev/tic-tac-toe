@@ -14,6 +14,8 @@
     "rules": {
         "no-unused-vars": "warn",
         "no-console": "off",
-        "spaced-comment": ["warn", "always", { "markers": ["/"] }]
+        "spaced-comment": ["warn", "always", { "markers": ["/"] }],
+        "no-underscore-dangle": "allow"
+
     }
 }
