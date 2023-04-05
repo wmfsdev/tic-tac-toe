@@ -7,11 +7,20 @@ const Gameboard = (() => {    // MODULE
     ];
 
   const reset = () => {
+    
       gameboard = [
         ['.', '.', '.', 
          '.', '.', '.', 
          '.', '.', '.']
       ];
+     
+      const button = document.querySelectorAll('button')
+      const modal = document.querySelector('.modal')
+      const overlay = document.querySelector('.overlay')
+      modal.remove()
+      overlay.remove()
+      button.forEach(element => element.remove())
+      gameFlow()
     }
 
     const declareWinner = (winner) => {
@@ -20,7 +29,11 @@ const Gameboard = (() => {    // MODULE
       const p = document.createElement('p')
       const overlay = document.createElement('div')
       const button = document.createElement('button')
+      if (winner === "DRAW") {
+        p.textContent = (`DRAW!`)
+      } else {
       p.textContent = (`${winner} WINS!`)
+      }
       button.textContent = 'Go Again?'
       button.classList.add('again')
       modal.classList.add('modal')
@@ -30,11 +43,7 @@ const Gameboard = (() => {    // MODULE
       win.append(modal)
       modal.append(p)
       modal.append(button)
-      button.addEventListener('click', () => {
-        modal.style.display = 'none'
-        overlay.style.display = 'none'
-        reset()
-      })
+      button.addEventListener('click', reset)
     }
 
     return {
@@ -56,23 +65,25 @@ const Gameboard = (() => {    // MODULE
         }
       },
 
-      gameState(playerId, playerName) {
+      gameState(playerId, playerName, counter) {
 
         const player = (playerId === '0') ? '0' : 'X'
 
-        console.log(player)
-        if (gameboard[0][0] === player  && gameboard[0][1] === player && gameboard[0][2] === player ||
-            gameboard[0][3] === player  && gameboard[0][4] === player && gameboard[0][5] === player ||
-            gameboard[0][6] === player  && gameboard[0][7] === player && gameboard[0][8] === player ||
+        if (gameboard[0][0] === player && gameboard[0][1] === player && gameboard[0][2] === player ||
+            gameboard[0][3] === player && gameboard[0][4] === player && gameboard[0][5] === player ||
+            gameboard[0][6] === player && gameboard[0][7] === player && gameboard[0][8] === player ||
             // ^^ Horizontal wins from first to last row
-            gameboard[0][0] === player  && gameboard[0][3] === player  && gameboard[0][6] === player ||  
-            gameboard[0][1] === player  && gameboard[0][4] === player  && gameboard[0][7] === player || 
+            gameboard[0][0] === player && gameboard[0][3] === player && gameboard[0][6] === player ||  
+            gameboard[0][1] === player && gameboard[0][4] === player && gameboard[0][7] === player || 
             gameboard[0][2] === player && gameboard[0][5] === player && gameboard[0][8] === player || 
             // ^^ Vertical wins from first to last column
-            gameboard[0][0] === player  && gameboard[0][4] === player && gameboard[0][8] === player || 
-            gameboard[0][6] === player  && gameboard[0][4] === player  && gameboard[0][2] === player  
+            gameboard[0][0] === player && gameboard[0][4] === player && gameboard[0][8] === player || 
+            gameboard[0][6] === player && gameboard[0][4] === player && gameboard[0][2] === player  
             // ^^ Diagonal wins: top left to bottom right, bottom left to top right
-          ) { declareWinner(playerName) } 
+          ) { declareWinner(playerName) 
+              return  
+          }
+            if (counter > 8) { declareWinner("DRAW") }  
       },
 
       log() {console.dir(gameboard)},
@@ -102,7 +113,7 @@ const Players = (name, playerId) => {
 
 // ------
 
-const gameFlow = (() => {
+const gameFlow = () => {
  
   const playerOne = Players('PLAYER 0', '0')
   const playerTwo = Players('PLAYER X', 'X')
@@ -119,18 +130,21 @@ const gameFlow = (() => {
   submit.addEventListener('click', changePlayerNames);
          
   let turn = 0
+  let counter = 0
 
   const turnListen = () => {
     const listen = document.querySelectorAll('.tiles > button')
       listen.forEach((button) => {
         button.addEventListener('click', (e) => {
           if (turn === 0) {
+            counter += 1
             playerOne.tileId(e.target.dataset.index)
-            Gameboard.gameState(playerOne.playerId, playerOne.name)
+            Gameboard.gameState(playerOne.playerId, playerOne.name, counter)
             turn += 1
           } else {
+            counter += 1
             playerTwo.tileId(e.target.dataset.index)
-            Gameboard.gameState(playerTwo.playerId, playerTwo.name)
+            Gameboard.gameState(playerTwo.playerId, playerTwo.name, counter)
             turn -= 1
           }
         })
@@ -141,4 +155,6 @@ Gameboard.renderBoard()
 Gameboard.assignDataset()
 turnListen()
 
-})()
+}
+
+gameFlow()
